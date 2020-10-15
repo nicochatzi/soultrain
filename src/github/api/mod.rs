@@ -1,11 +1,14 @@
 pub mod endpoints;
 
+use exitfailure::ExitFailure;
 use reqwest::{
     blocking::Client,
     header::{self, HeaderMap, HeaderValue},
     Url,
 };
 use serde::de::DeserializeOwned;
+
+pub type ApiResult<T> = Result<T, ExitFailure>;
 
 pub fn get<T>(url: &Url) -> T
 where

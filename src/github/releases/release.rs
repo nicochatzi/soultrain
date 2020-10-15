@@ -1,7 +1,4 @@
-use crate::{
-    files::directory,
-    github::{api, ReleaseAsset},
-};
+use crate::{files::directory, github::ReleaseAsset};
 
 use std::path::PathBuf;
 
@@ -28,39 +25,9 @@ impl std::fmt::Display for Release {
     }
 }
 
-pub struct Releases(pub Vec<Release>);
-
-impl std::fmt::Display for Releases {
-    fn fmt(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-        let mut releases = String::new();
-
-        for (i, release) in self.0.iter().enumerate() {
-            releases.push_str(&format!("{}", release));
-            releases.push_str("\n\n");
-            if i >= 5 {
-                break;
-            }
-        }
-
-        write!(formatter, "{}", releases)
-    }
-}
-
 impl Release {
-    pub fn latest() -> Self {
-        api::get(&api::endpoints::soul::LATEST_RELEASE)
-    }
-
-    pub fn with_version(version: Version) -> Self {
-        Self::all()
-            .iter()
-            .find(|&release| release.tag_name == version.to_string())
-            .unwrap()
-            .clone()
-    }
-
-    pub fn all() -> Vec<Self> {
-        api::get(&api::endpoints::soul::RELEASES)
+    pub fn version(&self) -> Version {
+        Version::parse(&self.tag_name).unwrap()
     }
 
     pub fn asset(&self) -> &ReleaseAsset {

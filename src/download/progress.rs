@@ -14,7 +14,7 @@ pub mod bar {
     fn style() -> ProgressStyle {
         ProgressStyle::default_bar()
         .template("{spinner:.green} [{elapsed_precise}] [{bar:40.cyan/blue}] {bytes}/{total_bytes} ({eta})")
-        .progress_chars("█ ")
+        .progress_chars("#>-")
     }
 }
 

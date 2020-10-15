@@ -52,6 +52,10 @@ impl ReleaseAsset {
         release_dir
     }
 
+    pub fn file(&self) -> PathBuf {
+        self.info().unwrap().file
+    }
+
     pub fn is_native(&self) -> bool {
         self.name.contains(os_name())
     }
