@@ -10,23 +10,18 @@ root_dir="${SOULTRAIN_DIR:-$HOME/.soultrain}"
 bin_dir="$root_dir/bin"
 file="$bin_dir/soultrain"
 
-main() {
-    ensure downloader "$uri" "$file"
-    enusre installer "$bin_dir" "$file"
-    ensure exec
+err() {
+    printf "$1" >&2
+    exit 1
+}
 
-    done_message
+ensure() {
+    if ! "$@"; then err "command failed: $*"; fi
 }
 
 downloader() {
-    curl --progress-bar --proto '=https' --tlsv1.2 --silent --show-error --fail --location "$1" --output "$2"
-}
-
-installer() {
-    ensure make_dir "$1"
-    ensure unzip -d "$1" -o "$2.zip"
-    ensure chmod +x "$2"
-    ensure rm "$2.zip"
+    echo "~~> Downloading this release: $2"
+    ensure curl --proto '=https' --tlsv1.2 -o "$1".zip --location "$2"
 }
 
 make_dir() {
@@ -35,15 +30,26 @@ make_dir() {
     fi
 }
 
-ensure() {
-    if ! "$@"; then err "command failed: $*"; fi
+installer() {
+    ensure unzip "$1".zip -d "$2"
+    ensure chmod +x "$1"
+    ensure rm -f "$1".zip
+    exec
 }
 
 done_message() {
+    echo ""
     echo "Add soultrain to your PATH by adding the following lines in your ~/.bash_profile or ~/.zshrc"
 	echo "  export SOULTRAIN_DIR=\"$root_dir\""
 	echo "  export PATH=\"\$SOULTRAIN_DIR/bin:\$PATH\""
     echo ""
+}
+
+main() {
+    make_dir "$bin_dir"
+    downloader "$file" "$uri"
+    installer "$file" "$bin_dir"
+    done_message
 }
 
 main "$@" || exit 1

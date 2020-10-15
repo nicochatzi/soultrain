@@ -27,19 +27,40 @@ enum App {
     Cleanup,
 }
 
-fn main() {
-    // soultrain::auto_update::run();
+fn get_soul_releases() -> github::Releases {
     let endpoint = &*github::endpoints::soul::RELEASES;
-    let releases = github::Releases::pull(endpoint);
-    let installer = Installer::new(&releases);
+    github::Releases::pull(endpoint)
+}
+
+fn main() {
+    soultrain::auto_update::run();
 
     match App::from_args() {
-        App::Update => installer.install_version("latest"),
-        App::Select { version } => installer.install_version(&version),
-        App::Show => println!("{}", installer.current_version()),
-        App::List { length } => println!("{}", releases.list(length)),
-        App::Latest => println!("{}", releases.latest().unwrap().version()),
-        App::Uninstall => installer.uninstall(),
-        App::Cleanup => installer.cleanup(),
+        App::Update => {
+            let releases = get_soul_releases();
+            Installer::new(&releases).install_version("latest")
+        },
+        App::Select { version } => {
+            let releases = get_soul_releases();
+            Installer::new(&releases).install_version(&version)
+        },
+        App::Show => {
+            let releases = get_soul_releases();
+            println!("{}", Installer::new(&releases).current_version())
+        },
+        App::List { length } => {
+            println!("{}", get_soul_releases().list(length))
+        },
+        App::Latest => {
+            println!("{}", get_soul_releases().latest().unwrap().version())
+        },
+        App::Uninstall => {
+            let releases = get_soul_releases();
+            Installer::new(&releases).uninstall()
+        },
+        App::Cleanup => {
+            let releases = get_soul_releases();
+            Installer::new(&releases).cleanup()
+        },
     }
 }

@@ -10,6 +10,7 @@ pub fn run() {
 
     if let Some(latest) = releases.latest() {
         if let Some(message) = check(latest.version()) {
+            println!("{}", message);
             if has_user_accepted() {
                 update(latest);
             }
@@ -36,7 +37,7 @@ pub fn check(latest: Version) -> Option<String> {
 pub fn has_user_accepted() -> bool {
     let mut input = String::new();
     match io::stdin().read_line(&mut input) {
-        Ok(_) => return input == "y".to_owned(),
+        Ok(_) => input.trim() == "y".to_owned(),
         Err(_) => {
             println!("Invalid user input.");
             false

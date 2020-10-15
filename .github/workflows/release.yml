@@ -1,0 +1,47 @@
+on:
+    push:
+      tags:
+        - 'v*'
+
+  name: Create Release
+
+  jobs:
+    build:
+      name: Create Release
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v2
+
+          - uses: actions/cache@v2
+          with:
+            path: |
+              ~/.cargo/registry
+              ~/.cargo/git
+              target
+            key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+        - uses: actions-rs/toolchain@v1
+          with:
+            profile: minimal
+            toolchain: stable
+            override: true
+
+        - uses: actions-rs/cargo@v1
+          with:
+            command: test
+
+        - name: Create Release
+          id: create_release
+          uses: actions/create-release@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            tag_name: ${{ github.ref }}
+            release_name: Release ${{ github.ref }}
+            body: |
+              Changes in this Release
+              - First Change
+              - Second Change
+            draft: false
+            prerelease: false
