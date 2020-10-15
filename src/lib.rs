@@ -1,6 +1,6 @@
 pub mod download;
 pub mod files;
 pub mod github;
-pub mod auto_update;
+pub mod installer;
 
-pub use files::install::Installer;
+pub use installer::install::Installer;

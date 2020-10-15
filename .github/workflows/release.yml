@@ -1,47 +1,57 @@
 on:
-    push:
-      tags:
-        - 'v*'
+  push:
+    tags:
+      - '*'
 
-  name: Create Release
+name: Create Release
 
-  jobs:
-    build:
-      name: Create Release
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v2
+env:
+  artefact: soultrain-osx-x64.zip
 
-          - uses: actions/cache@v2
-          with:
-            path: |
-              ~/.cargo/registry
-              ~/.cargo/git
-              target
-            key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-        - uses: actions-rs/toolchain@v1
-          with:
-            profile: minimal
-            toolchain: stable
-            override: true
+    steps:
+    - uses: actions/checkout@v2
+      name: Checkout code
 
-        - uses: actions-rs/cargo@v1
-          with:
-            command: test
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-        - name: Create Release
-          id: create_release
-          uses: actions/create-release@v1
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
-            tag_name: ${{ github.ref }}
-            release_name: Release ${{ github.ref }}
-            body: |
-              Changes in this Release
-              - First Change
-              - Second Change
-            draft: false
-            prerelease: false
+    - uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
+        override: true
+
+    - uses: actions-rs/cargo@v1
+      with:
+        command: build --release
+
+    - name: create artefact
+      run: zip --junk-paths ${{ env.artefact }} target/release/soultrain
+
+    - uses: actions/create-release@v1
+      id: create_release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+
+    - uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./${{ env.artefact }}
+        asset_name: ${{ env.artefact }}
+        asset_content_type: application/zip

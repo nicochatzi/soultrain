@@ -20,7 +20,7 @@ ensure() {
 }
 
 downloader() {
-    echo "~~> Downloading this release: $2"
+    echo "Downloading this: $2"
     ensure curl --proto '=https' --tlsv1.2 -o "$1".zip --location "$2"
 }
 
@@ -31,10 +31,10 @@ make_dir() {
 }
 
 installer() {
-    ensure unzip "$1".zip -d "$2"
+    echo "Placing binary here: $1"
+    ensure unzip -o -q "$1".zip -d "$2"
     ensure chmod +x "$1"
     ensure rm -f "$1".zip
-    exec
 }
 
 done_message() {

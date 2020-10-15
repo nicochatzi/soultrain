@@ -1,6 +1,7 @@
 use crate::{
     download::Downloadable,
-    files::{directory, link, version, utils},
+    files::{directory, utils},
+    installer::{link, version},
     github::{Releases, Release},
 };
 

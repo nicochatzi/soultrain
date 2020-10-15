@@ -33,7 +33,7 @@ fn get_soul_releases() -> github::Releases {
 }
 
 fn main() {
-    soultrain::auto_update::run();
+    soultrain::installer::auto_update::run();
 
     match App::from_args() {
         App::Update => {
