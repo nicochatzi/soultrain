@@ -28,7 +28,7 @@ enum App {
 }
 
 fn main() {
-    soultrain::auto_update::run();
+    // soultrain::auto_update::run();
     let endpoint = &*github::endpoints::soul::RELEASES;
     let releases = github::Releases::pull(endpoint);
     let installer = Installer::new(&releases);

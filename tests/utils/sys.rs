@@ -18,18 +18,19 @@ pub fn remove_soul() {
 }
 
 pub fn are_soultrain_dirs_present() -> bool {
-    assert!(!PathBuf::from("~/.soultrain/latest").exists());
-    assert!(!PathBuf::from("~/.soultrain/release").exists());
+    let file_exists = |file: &str| {
+        PathBuf::from(file).exists()
+    };
+    file_exists("~/.soultrain/latest") && file_exists("~/.soultrain/release")
 }
 
 pub fn remove_soultrain() {
-    let remove_dirs = |root| {
+    let remove_dirs = |root: PathBuf| {
         if root.exists() {
             remove_dir_all(root).unwrap();
         }
-    }
+    };
     remove_dirs(PathBuf::from("~/.soultrain/latest"));
     remove_dirs(PathBuf::from("~/.soultrain/release"));
     assert!(!are_soultrain_dirs_present());
 }
-
