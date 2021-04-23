@@ -32,7 +32,8 @@ jobs:
 
     - uses: actions-rs/cargo@v1
       with:
-        command: build --release
+        command: build
+        args: --release
 
     - name: create artefact
       run: zip --junk-paths ${{ env.artefact }} target/release/soultrain
