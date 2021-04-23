@@ -6,6 +6,10 @@ use regex::Regex;
 use semver::Version;
 
 pub fn cached() -> Vec<Version> {
+    if let Err(_) = fs::read_dir(directory::releases()) {
+        fs::create_dir_all(directory::releases());
+    }
+
     let mut versions = Vec::<Version>::new();
     for entry in fs::read_dir(directory::releases()).unwrap() {
         let path = entry.unwrap().path();
