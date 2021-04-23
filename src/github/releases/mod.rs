@@ -28,10 +28,13 @@ impl Releases {
     }
 
     pub fn version(&self, version: &semver::Version) -> Option<&Release> {
-        Some(&self.inner
-            .iter()
-            .find(|&release| release.tag_name == version.to_string())
-            .unwrap())
+        Some(
+            &self
+                .inner
+                .iter()
+                .find(|&release| release.tag_name == version.to_string())
+                .unwrap(),
+        )
     }
 
     pub fn list(&self, length: Option<usize>) -> String {

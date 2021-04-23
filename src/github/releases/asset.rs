@@ -57,7 +57,7 @@ impl ReleaseAsset {
     }
 
     pub fn is_native(&self) -> bool {
-        self.name.contains(os_name())
+        self.name.contains(os_name()) && self.name.contains(arch())
     }
 }
 
@@ -72,4 +72,14 @@ fn os_name() -> &'static str {
         return "osx";
     }
     panic!("Unsupported OS!");
+}
+
+fn arch() -> &'static str {
+    if std::cfg!(target_arch = "x86_64") {
+        return "x64";
+    }
+    if std::cfg!(target_arch = "arm") {
+        return "arm64";
+    }
+    panic!("Unsupported architecture!");
 }

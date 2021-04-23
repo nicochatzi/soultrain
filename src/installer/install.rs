@@ -1,8 +1,8 @@
 use crate::{
     download::Downloadable,
     files::{directory, utils},
+    github::{Release, Releases},
     installer::{link, version},
-    github::{Releases, Release},
 };
 
 use std::{fs, path::PathBuf};

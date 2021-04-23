@@ -42,6 +42,7 @@ done_message() {
     echo "Add soultrain to your PATH by adding the following lines in your ~/.bash_profile or ~/.zshrc"
 	echo "  export SOULTRAIN_DIR=\"$root_dir\""
 	echo "  export PATH=\"\$SOULTRAIN_DIR/bin:\$PATH\""
+	echo "  export PATH=\"\$SOULTRAIN_DIR/latest:\$PATH\""
     echo ""
 }
 
